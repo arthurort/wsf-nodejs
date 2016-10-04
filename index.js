@@ -37,8 +37,6 @@ const User = database.define('user', {
         unique: true,
         allowNull: false
     }
-}, {
-    underscored: true
 });
 
 // database.sync()
@@ -72,18 +70,30 @@ server.route({
     method: 'POST',
     path: '/user',
     handler: (request, reply) => {
-        User.create({
-                username: 'toto'
-            })
+        const data =
+            request.payload  ||
+            request.query ||
+            request.params;
+
+        User.create(data)
             .then(user => {
-                return reply.view('index', {
-                    username: 'toto'
-                });
+                return reply.view('index', user.dataValues);
             });
-
-
     }
 });
+
+server.route({
+    method: 'GET',
+    path: '/user',
+    handler: (request, reply) => {
+        User.findAll()
+            .then(result =>{
+                return reply(result);
+
+        })
+    }
+})
+
 server.start(err => {
     if (err) {
         throw new Error(err);
