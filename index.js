@@ -1,9 +1,12 @@
+//Nouveau serveur Hapi
 const Hapi = require('hapi');
 const server = new Hapi.Server();
 
-const _ = require('lodash');
+//dependance externer
 const ejs = require('ejs');
-const Sequelize = require('sequelize');
+
+
+//plugins externes et API propres
 
 const plugins = [
     require('vision'),
@@ -11,49 +14,15 @@ const plugins = [
 ];
 
 
-const environment = process.env.NODE_ENV || 'development';
-const config = require('./config')[environment];
-const toto = {
-    test: "hello"
-};
 
-// const configB = _.merge(config,toto);
-// console.log(configB);
-
-const database = new Sequelize(config);
-
-database.authenticate()
-    .then(() => {
-        console.log('Hello');
-    })
-    .then(() => {
-        console.log('Arthur');
-    })
-    .catch(err => {
-        console.log('Err', err);
-    });
-
-const User = database.define('user', {
-    username: {
-        type: Sequelize.STRING,
-        unique: true,
-        allowNull: false
-    }
-});
-
-// database.sync()
-// 	.then(() => {
-// 		console.log('Syncing ...');
-// 	})
-// 	.catch(err => {
-// 		throw new Error(err);
-// 	})
+//création d'une nouvelle connexion Hapi. Utilise les envvar si présentes.
 
 server.connection({
     host: process.env.HOST || process.env.HOTSNAME || 'localhost',
     port: process.env.PORT || 8010
 });
 
+//enregistrement des plugins. Une fois fait, configuration des views engine et démarrage du serveur.
 server.register(plugins, err => {
     if (err) {
         throw new Error(err);
@@ -67,8 +36,6 @@ server.register(plugins, err => {
         path: 'views'
     });
 });
-
-
 
 server.start(err => {
     if (err) {
