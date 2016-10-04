@@ -5,9 +5,11 @@ const _ = require('lodash');
 const ejs = require('ejs');
 const Sequelize = require('sequelize');
 
-const plugins = {
-    vision: require('vision')
-};
+const plugins = [
+    require('vision'),
+    require("./apis/users")
+];
+
 
 const environment = process.env.NODE_ENV || 'development';
 const config = require('./config')[environment];
@@ -52,7 +54,7 @@ server.connection({
     port: process.env.PORT || 8010
 });
 
-server.register(plugins.vision, err => {
+server.register(plugins, err => {
     if (err) {
         throw new Error(err);
     }
@@ -66,33 +68,7 @@ server.register(plugins.vision, err => {
     });
 });
 
-server.route({
-    method: 'POST',
-    path: '/user',
-    handler: (request, reply) => {
-        const data =
-            request.payload  ||
-            request.query ||
-            request.params;
 
-        User.create(data)
-            .then(user => {
-                return reply.view('index', user.dataValues);
-            });
-    }
-});
-
-server.route({
-    method: 'GET',
-    path: '/user',
-    handler: (request, reply) => {
-        User.findAll()
-            .then(result =>{
-                return reply(result);
-
-        })
-    }
-})
 
 server.start(err => {
     if (err) {
