@@ -14,7 +14,8 @@
         "vision": "~4.1.0"
     },
     "scripts": {
-        "start": "node ./index"
+        "start": "node ./index",
+        "db:sync":"node ./sync.js"
     }
 
 }
