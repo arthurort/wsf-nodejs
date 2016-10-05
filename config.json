@@ -4,7 +4,7 @@
         "port":3306,
         "username":"root",
         "host":"localhost",
-        "password":"password",
+        "password":"msokwh16er",
         "database":"nodejs"
     },
     "production": {
